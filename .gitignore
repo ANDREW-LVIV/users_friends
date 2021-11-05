@@ -1,0 +1,11 @@
+/drush/contrib/
+/vendor/
+/web/core/
+/web/themes/contrib/
+/web/modules/contrib/
+/web/profiles/contrib/
+
+/web/sites/*/files/
+
+/.idea/
+/docker-compose.override.yml
