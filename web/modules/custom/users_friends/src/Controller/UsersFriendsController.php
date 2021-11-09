@@ -18,8 +18,39 @@ class UsersFriendsController extends ControllerBase {
   public function page() {
     return [
       '#type' => 'markup',
-      '#markup' => $this->t('Implement method: page')
+      '#markup' => $this->t('main page')
     ];
   }
 
+  /**
+   * Friends List Page.
+   *
+   * @param int $uid
+   *   User ID.
+   *
+   * @return string
+   *   Return string.
+   */
+  public function friendsList(int $uid) {
+    return [
+      '#type' => 'markup',
+      '#markup' => $this->t('Friends List')
+    ];
+  }
+
+  /**
+   * Friends Requests Page.
+   *
+   * @param int $uid
+   *   User ID.
+   *
+   * @return string
+   *   Return string.
+   */
+  public function friendsRequests(int $uid) {
+    return [
+      '#type' => 'markup',
+      '#markup' => $this->t('Friends Requests')
+    ];
+  }
 }

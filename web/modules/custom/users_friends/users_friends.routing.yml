@@ -6,3 +6,19 @@ users_friends.users_friends_controller_page:
     _title: 'UsersFriends'
   requirements:
     _permission: 'access content'
+
+users_friends.users_friends_list:
+  path: '/user/{uid}/friends'
+  defaults:
+    _controller: '\Drupal\users_friends\Controller\UsersFriendsController::friendsList'
+    _title: 'UsersFriends'
+  requirements:
+    _permission: 'access content'
+
+users_friends.users_friends_requests:
+  path: '/user/{uid}/friends/requests'
+  defaults:
+    _controller: '\Drupal\users_friends\Controller\UsersFriendsController::friendsRequests'
+    _title: 'UsersFriends'
+  requirements:
+    _permission: 'access content'
