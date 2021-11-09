@@ -1,0 +1,35 @@
+<?php
+
+/**
+ * @file
+ * Contains users_friends.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function users_friends_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the users_friends module.
+    case 'help.page.users_friends':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Users Friends Module') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function users_friends_theme() {
+  return [
+    'users_friends' => [
+      'render element' => 'children',
+    ],
+  ];
+}

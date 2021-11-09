@@ -1,0 +1,8 @@
+
+users_friends.users_friends_controller_page:
+  path: '/users_friends'
+  defaults:
+    _controller: '\Drupal\users_friends\Controller\UsersFriendsController::page'
+    _title: 'UsersFriends'
+  requirements:
+    _permission: 'access content'
