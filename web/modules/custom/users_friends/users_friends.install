@@ -1,0 +1,49 @@
+<?php
+/**
+ * Implements hook_schema().
+ *
+ */
+function users_friends_schema(): array {
+  $schema['module_users_friends'] = [
+    'description' => 'Stores friendship module data.',
+    'fields' => [
+      'id' => [
+        'description' => 'The primary identifier for the record.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ],
+      'request_date' => [
+        'description' => 'The request timestamp.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ],
+      'accept_date' => [
+        'description' => 'The accept timestamp.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ],
+      'requester_uid' => [
+        'description' => 'The ID of the user who made the request.',
+        'type' => 'int',
+        'not null' => TRUE,
+      ],
+      'recipient_uid' => [
+        'description' => 'The ID of the user who received the request.',
+        'type' => 'int',
+        'not null' => TRUE,
+      ],
+      'status' => [
+        'description' => 'The status of friendship: 1 - accepted and 0 - pending.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ],
+    ],
+    'primary key' => ['id'],
+  ];
+
+  return $schema;
+}
