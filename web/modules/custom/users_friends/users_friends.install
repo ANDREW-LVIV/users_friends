@@ -4,7 +4,7 @@
  *
  */
 function users_friends_schema(): array {
-  $schema['module_users_friends'] = [
+  $schema['users_friends'] = [
     'description' => 'Stores friendship module data.',
     'fields' => [
       'id' => [

@@ -14,6 +14,7 @@ users_friends.users_friends_list:
     _title: 'UsersFriends'
   requirements:
     _permission: 'access content'
+    uid: \d+
 
 users_friends.users_friends_requests:
   path: '/user/{uid}/friends/requests'
@@ -22,3 +23,4 @@ users_friends.users_friends_requests:
     _title: 'UsersFriends'
   requirements:
     _permission: 'access content'
+    uid: \d+
