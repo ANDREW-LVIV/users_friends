@@ -1,0 +1,5 @@
+services:
+  users_friends.manager:
+    class: Drupal\users_friends\UsersFriendsService
+    arguments:
+      [ '@database', '@datetime.time' ]
