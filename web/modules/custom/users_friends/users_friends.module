@@ -5,6 +5,8 @@
  * Contains users_friends.module.
  */
 
+use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 
 /**
@@ -32,4 +34,30 @@ function users_friends_theme() {
       'render element' => 'children',
     ],
   ];
+}
+
+/**
+ * Implements hook_entity_extra_field_info().
+ */
+function users_friends_entity_extra_field_info(): array {
+  $extra = [];
+  $extra['user']['user']['display']['user_friend_request'] = [
+    'label' => t('User friend request'),
+    'weight' => 5,
+  ];
+
+  return $extra;
+}
+
+
+/**
+ * Implements hook_ENTITY_TYPE_view().
+ */
+function users_friends_user_view(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display, $view_mode) {
+  if ($display->getComponent('user_friend_request')) {
+    $build['user_friend_request'] = [
+      '#type' => 'markup',
+      '#markup' => "<p>User friend request block</p>",
+    ];
+  }
 }
