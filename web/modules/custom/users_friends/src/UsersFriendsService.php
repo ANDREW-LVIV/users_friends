@@ -10,7 +10,7 @@ use Drupal\Component\Datetime\TimeInterface;
  *
  * @package Drupal\users_friends
  */
-class UsersFriendsService implements UsersFriendsInterface{
+class UsersFriendsService implements UsersFriendsInterface {
 
   /**
    * The default database connection.

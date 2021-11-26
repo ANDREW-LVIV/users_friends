@@ -24,3 +24,19 @@ users_friends.users_friends_requests:
   requirements:
     _permission: 'access content'
     uid: \d+
+
+users_friends.users_friends_form:
+  path: '/users_friends/form'
+  defaults:
+    _form: '\Drupal\users_friends\Form\UsersFriendsForm'
+  requirements:
+    _access: "TRUE"
+
+users_friends.users_friends_delete_form:
+  path: '/users_friends/delete/{uid_1}/{uid_2}'
+  defaults:
+    _form: '\Drupal\users_friends\Form\UsersFriendsDeleteForm'
+  requirements:
+    _access: "TRUE"
+    uid_1: ^\d+$
+    uid_2: ^\d+$
