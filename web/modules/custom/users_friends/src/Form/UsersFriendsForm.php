@@ -38,6 +38,12 @@ class UsersFriendsForm extends FormBase {
     $this->requesterUid = \Drupal::currentUser()->id();
     $this->recipientUid = \Drupal::routeMatch()->getParameter('user')->id();
 
+    $form['friends_status'] = [
+      '#type' => 'markup',
+      '#markup' => \Drupal::service('users_friends.manager')
+        ->getFriendsStatus($this->requesterUid, $this->recipientUid)
+    ];
+
     $form['add_request'] = [
       '#type' => 'submit',
       '#value' => t('add to friend'),
