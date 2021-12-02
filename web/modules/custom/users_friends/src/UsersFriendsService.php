@@ -116,7 +116,23 @@ class UsersFriendsService implements UsersFriendsInterface {
    * {@inheritdoc}
    */
   public function removeFriend(int $uid_1, int $uid_2): bool {
-    // TODO: Implement removeFriend() method.
+    $query = $this->connection->delete('users_friends');
+
+    $andGroup1 = $query->andConditionGroup()
+      ->condition('requester_uid', $uid_1)
+      ->condition('recipient_uid', $uid_2);
+
+    $andGroup2 = $query->andConditionGroup()
+      ->condition('requester_uid', $uid_2)
+      ->condition('recipient_uid', $uid_1);
+
+    $orGroup = $query->orConditionGroup()
+      ->condition($andGroup1)
+      ->condition($andGroup2);
+
+    $query->condition($orGroup);
+
+    return $query->execute();
   }
 
   /**
