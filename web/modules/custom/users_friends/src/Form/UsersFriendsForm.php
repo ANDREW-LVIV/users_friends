@@ -38,87 +38,99 @@ class UsersFriendsForm extends FormBase {
     $this->requesterUid = \Drupal::currentUser()->id();
     $this->recipientUid = \Drupal::routeMatch()->getParameter('user')->id();
 
-    $form['friends_status'] = [
-      '#type' => 'markup',
-      '#markup' =>\Drupal::service('users_friends.manager')
-        ->getFriendsStatus($this->requesterUid, $this->recipientUid),
-    ];
-
     $form['friends_uids'] = [
       '#type' => 'markup',
       '#markup' =>  implode(', ', \Drupal::service('users_friends.manager')
         ->getFriendsUids($this->requesterUid)),
     ];
 
-    $form['add_request'] = [
-      '#type' => 'submit',
-      '#value' => t('add to friend'),
-      '#prefix' => '<div id="add-request">',
-      '#suffix' => '</div>',
-      '#ajax' => [
-        'callback' => '::callbackAddRequestTrigger',
-        'event' => 'click',
-        'progress' => [
-          'type' => 'none',
+    if($this->requesterUid === $this->recipientUid) {
+      return $form;
+    }
+
+    $friendsStatus = \Drupal::service('users_friends.manager')
+      ->getFriendsStatus($this->requesterUid, $this->recipientUid);
+
+    if ($friendsStatus == 'none') {
+      // Add friendship request button
+      $form['add_request'] = [
+        '#type' => 'submit',
+        '#value' => t('Add to friend'),
+        '#prefix' => '<div id="add-request">',
+        '#suffix' => '</div>',
+        '#ajax' => [
+          'callback' => '::callbackAddRequestTrigger',
+          'event' => 'click',
+          'progress' => [
+            'type' => 'none',
+          ],
         ],
-      ],
-    ];
+      ];
+    }
 
-    $form['cancel_request'] = [
-      '#type' => 'submit',
-      '#value' => t('cancel friendship request'),
-      '#prefix' => '<div id="cancel-request">',
-      '#suffix' => '</div>',
-      '#ajax' => [
-        'callback' => '::callbackCancelRequestTrigger',
-        'event' => 'click',
-        'progress' => [
-          'type' => 'none',
+    if ($friendsStatus == 'requester') {
+      // Cancel friendship request button
+      $form['cancel_request'] = [
+        '#type' => 'submit',
+        '#value' => t('cancel friendship request'),
+        '#prefix' => '<div id="cancel-request">',
+        '#suffix' => '</div>',
+        '#ajax' => [
+          'callback' => '::callbackCancelRequestTrigger',
+          'event' => 'click',
+          'progress' => [
+            'type' => 'none',
+          ],
         ],
-      ],
-    ];
+      ];
+    }
 
-    $form['accept_request'] = [
-      '#type' => 'submit',
-      '#value' => t('accept friendship request'),
-      '#prefix' => '<div id="accept-request">',
-      '#suffix' => '</div>',
-      '#ajax' => [
-        'callback' => '::callbackAcceptRequestTrigger',
-        'event' => 'click',
-        'progress' => [
-          'type' => 'none',
+
+    if ($friendsStatus == 'recipient') {
+      // Accept friendship request button
+      $form['accept_request'] = [
+        '#type' => 'submit',
+        '#value' => t('Accept friendship request'),
+        '#prefix' => '<div id="accept-request">',
+        '#suffix' => '</div>',
+        '#ajax' => [
+          'callback' => '::callbackAcceptRequestTrigger',
+          'event' => 'click',
+          'progress' => [
+            'type' => 'none',
+          ],
         ],
-      ],
-    ];
+      ];
 
-    $form['decline_request'] = [
-      '#type' => 'submit',
-      '#value' => t('decline friendship request'),
-      '#prefix' => '<div id="decline-request">',
-      '#suffix' => '</div>',
-      '#ajax' => [
-        'callback' => '::callbackDeclineRequestTrigger',
-        'event' => 'click',
-        'progress' => [
-          'type' => 'none',
+      // Decline friendship request button
+      $form['decline_request'] = [
+        '#type' => 'submit',
+        '#value' => t('Decline friendship request'),
+        '#prefix' => '<div id="decline-request">',
+        '#suffix' => '</div>',
+        '#ajax' => [
+          'callback' => '::callbackDeclineRequestTrigger',
+          'event' => 'click',
+          'progress' => [
+            'type' => 'none',
+          ],
         ],
-      ],
-    ];
+      ];
+    }
 
-    $form['remove_friend'] = [
-      '#type' => 'link',
-      '#title' => $this->t('remove friend'),
-      '#url' => Url::fromRoute('users_friends.users_friends_delete_form',
-        ['uid_1' => $this->requesterUid, 'uid_2' => $this->recipientUid]),
-      '#attributes' => ['id'=>'remove-friend', 'class'=> 'button button--primary js-form-submit form-submit'],
-    ];
-
-//Додати у друзі (якщо ви знаходитесь на сторінці іншого користувача, з яким ви не друзі, та не відправляли йому заявку)
-//Скасувати заявку у друзі (якщо ви знаходитесь на сторінці іншого користувача, якому ви вже відправили заявку)
-//Прийняти заявку у друзі (якщо ви знаходитесь на сторінці іншого користувачаа, який відправив вам заявку)
-//Відхилити заявку у друзі (якщо ви знаходитесь на сторінці іншого користувачаа, який відправив вам заявку)
-//Видалити друга (якщо ви друзі із користувачем)
+    if ($friendsStatus == 'friends') {
+      // Remove friend button
+      $form['remove_friend'] = [
+        '#type' => 'link',
+        '#title' => $this->t('Remove friend'),
+        '#url' => Url::fromRoute('users_friends.users_friends_delete_form',
+          ['uid_1' => $this->requesterUid, 'uid_2' => $this->recipientUid]),
+        '#attributes' => [
+          'id' => 'remove-friend',
+          'class' => 'button button--primary js-form-submit form-submit',
+        ],
+      ];
+    }
 
     return $form;
   }
