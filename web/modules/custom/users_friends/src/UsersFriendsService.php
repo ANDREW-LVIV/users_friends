@@ -4,6 +4,7 @@ namespace Drupal\users_friends;
 
 use Drupal\Core\Database\Connection;
 use Drupal\Component\Datetime\TimeInterface;
+use PDO;
 
 /**
  * Class UsersFriendsService.
@@ -183,7 +184,27 @@ class UsersFriendsService implements UsersFriendsInterface {
    * {@inheritdoc}
    */
   public function getFriendsUids(int $uid): array {
-    // TODO: Implement getFriendsUids() method.
+    $query = \Drupal::database()->select('users_friends', 'n');
+    $query->addField('n', 'requester_uid');
+    $query->addField('n', 'recipient_uid');
+    $orGroup = $query->orConditionGroup()
+      ->condition('requester_uid', $uid)
+      ->condition('recipient_uid', $uid);
+    $query->condition($orGroup);
+    $query->condition('n.status', 1);
+    $object = $query->execute()->fetchAll();
+
+    $array = [];
+    foreach ($object as $value) {
+      if ($value->requester_uid != $uid) {
+        $array[] = $value->requester_uid;
+      }
+      if ($value->recipient_uid != $uid) {
+        $array[] = $value->recipient_uid;
+      }
+    }
+
+    return $array;
   }
 
   /**
