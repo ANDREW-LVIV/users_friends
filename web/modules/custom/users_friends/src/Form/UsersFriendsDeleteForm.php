@@ -39,15 +39,12 @@ class UsersFriendsDeleteForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-//    /** @var \Drupal\users_friends\UsersFriendsService $removeFriendService */
-//    $removeFriendService = \Drupal::service('users_friends.manager')
-//      ->removeFriend($this->uid_1, $this->uid_2);
-//    if($removeFriendService) {
-//      $path = Url::fromRoute('domain_site_settings.config_form',
-//        ['domain_id' => 'drupal_com'])->toString();
-//      $response = new RedirectResponse($path);
-//      $response->send();
-//    }
+    \Drupal::service('users_friends.manager')
+      ->removeFriend($this->uid_1, $this->uid_2);
+
+    $path = Url::fromRoute('user.page')->toString();
+    $response = new RedirectResponse($path);
+    $response->send();
   }
 
   /**
