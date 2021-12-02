@@ -97,7 +97,8 @@ class UsersFriendsForm extends FormBase {
     $form['remove_friend'] = [
       '#type' => 'link',
       '#title' => $this->t('remove friend'),
-      '#url' => Url::fromRoute('users_friends.users_friends_delete_form', ['uid_1' => 1, 'uid_2' => 2]),
+      '#url' => Url::fromRoute('users_friends.users_friends_delete_form',
+        ['uid_1' => $this->requesterUid, 'uid_2' => $this->recipientUid]),
       '#attributes' => ['id'=>'remove-friend', 'class'=> 'button button--primary js-form-submit form-submit'],
     ];
 
