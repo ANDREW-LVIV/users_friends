@@ -40,8 +40,14 @@ class UsersFriendsForm extends FormBase {
 
     $form['friends_status'] = [
       '#type' => 'markup',
-      '#markup' => \Drupal::service('users_friends.manager')
-        ->getFriendsStatus($this->requesterUid, $this->recipientUid)
+      '#markup' =>\Drupal::service('users_friends.manager')
+        ->getFriendsStatus($this->requesterUid, $this->recipientUid),
+    ];
+
+    $form['friends_uids'] = [
+      '#type' => 'markup',
+      '#markup' =>  implode(', ', \Drupal::service('users_friends.manager')
+        ->getFriendsUids($this->requesterUid)),
     ];
 
     $form['add_request'] = [
