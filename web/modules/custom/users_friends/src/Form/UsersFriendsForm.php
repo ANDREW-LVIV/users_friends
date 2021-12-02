@@ -38,6 +38,12 @@ class UsersFriendsForm extends FormBase {
     $this->requesterUid = \Drupal::currentUser()->id();
     $this->recipientUid = \Drupal::routeMatch()->getParameter('user')->id();
 
+    $form['friends_status'] = [
+      '#type' => 'markup',
+      '#markup' => \Drupal::service('users_friends.manager')
+        ->getFriendsStatus($this->requesterUid, $this->recipientUid)
+    ];
+
     $form['add_request'] = [
       '#type' => 'submit',
       '#value' => t('add to friend'),
@@ -97,7 +103,8 @@ class UsersFriendsForm extends FormBase {
     $form['remove_friend'] = [
       '#type' => 'link',
       '#title' => $this->t('remove friend'),
-      '#url' => Url::fromRoute('users_friends.users_friends_delete_form', ['uid_1' => 1, 'uid_2' => 2]),
+      '#url' => Url::fromRoute('users_friends.users_friends_delete_form',
+        ['uid_1' => $this->requesterUid, 'uid_2' => $this->recipientUid]),
       '#attributes' => ['id'=>'remove-friend', 'class'=> 'button button--primary js-form-submit form-submit'],
     ];
 

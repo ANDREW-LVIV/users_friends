@@ -58,7 +58,7 @@ class UsersFriendsDeleteForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getCancelUrl() {
-    return new Url('users_friends.users_friends_form');
+    return new Url('user.page');
   }
 
   /**

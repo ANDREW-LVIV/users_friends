@@ -34,9 +34,15 @@ class UsersFriendsService implements UsersFriendsInterface {
    *   The time service.
    */
 
+  /**
+   * Current user id.
+   */
+  protected int $currentUser;
+
   public function __construct(Connection $connection, TimeInterface $time) {
     $this->connection = $connection;
     $this->time = $time;
+    $this->currentUser = \Drupal::currentUser()->id();
   }
 
   /**
@@ -117,19 +123,15 @@ class UsersFriendsService implements UsersFriendsInterface {
    */
   public function removeFriend(int $uid_1, int $uid_2): bool {
     $query = $this->connection->delete('users_friends');
-
     $andGroup1 = $query->andConditionGroup()
       ->condition('requester_uid', $uid_1)
       ->condition('recipient_uid', $uid_2);
-
     $andGroup2 = $query->andConditionGroup()
       ->condition('requester_uid', $uid_2)
       ->condition('recipient_uid', $uid_1);
-
     $orGroup = $query->orConditionGroup()
       ->condition($andGroup1)
       ->condition($andGroup2);
-
     $query->condition($orGroup);
 
     return $query->execute();
@@ -141,7 +143,38 @@ class UsersFriendsService implements UsersFriendsInterface {
    * {@inheritdoc}
    */
   public function getFriendsStatus(int $uid_1, int $uid_2): string {
-    // TODO: Implement getFriendsStatus() method.
+    $query = \Drupal::database()->select('users_friends', 'n');
+    $query->addField('n', 'status');
+    $query->addField('n', 'requester_uid');
+    $query->addField('n', 'recipient_uid');
+    $andGroup1 = $query->andConditionGroup()
+      ->condition('n.requester_uid', $uid_1)
+      ->condition('n.recipient_uid', $uid_2);
+    $andGroup2 = $query->andConditionGroup()
+      ->condition('n.requester_uid', $uid_2)
+      ->condition('n.recipient_uid', $uid_1);
+    $orGroup = $query->orConditionGroup()
+      ->condition($andGroup1)
+      ->condition($andGroup2);
+    $query->condition($orGroup);
+    $query->range(0, 1);
+    $data = $query->execute()->fetchAssoc();
+
+    switch (true) {
+      case ($data['status'] == 0 && $data['requester_uid'] == $this->currentUser):
+        $result = 'requester';
+        break;
+      case ($data['status'] == 0 && $data['recipient_uid'] == $this->currentUser):
+        $result = 'recipient';
+        break;
+      case ($data['status'] == 1):
+        $result = 'friends';
+        break;
+      default:
+        $result = 'none';
+    }
+
+    return $result;
   }
 
   /**
