@@ -2,4 +2,4 @@ services:
   users_friends.manager:
     class: Drupal\users_friends\UsersFriendsService
     arguments:
-      [ '@database', '@datetime.time' ]
+      [ '@database', '@datetime.time', '@current_user' ]

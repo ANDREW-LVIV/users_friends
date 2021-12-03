@@ -4,10 +4,10 @@ namespace Drupal\users_friends;
 
 use Drupal\Core\Database\Connection;
 use Drupal\Component\Datetime\TimeInterface;
-use PDO;
+use Drupal\Core\Session\AccountInterface;
 
 /**
- * Class UsersFriendsService.
+ * Friendship manage and info methods.
  *
  * @package Drupal\users_friends
  */
@@ -28,32 +28,37 @@ class UsersFriendsService implements UsersFriendsInterface {
   protected TimeInterface $time;
 
   /**
-   * @param \Drupal\Core\Database\Connection $connection
-   *   The default database connection.
+   * Current user id.
    *
-   * @param \Drupal\Component\Datetime\TimeInterface $time
-   *   The time service.
+   * @var \Drupal\Core\Session\AccountInterface
    */
+  protected AccountInterface $currentUser;
 
   /**
-   * Current user id.
+   * Constructs a UsersFriendsService object.
+   *
+   * @param \Drupal\Core\Database\Connection $connection
+   *   The default database connection.
+   * @param \Drupal\Component\Datetime\TimeInterface $time
+   *   The time service.
+   * @param \Drupal\Core\Session\AccountInterface $current_user
+   *   Current user.
    */
-  protected int $currentUser;
-
-  public function __construct(Connection $connection, TimeInterface $time) {
+  public function __construct(Connection $connection, TimeInterface $time, AccountInterface $current_user) {
     $this->connection = $connection;
     $this->time = $time;
-    $this->currentUser = \Drupal::currentUser()->id();
+    $this->currentUser = $current_user;
   }
 
   /**
    * Add friendship request.
    *
    * {@inheritdoc}
+   *
    * @throws \Exception
    */
   public function addRequest(int $requester, int $recipient): bool {
-    // check whether a record already exists.
+    // Check whether a record already exists.
     $recordsCount = $this->connection->select('users_friends', 'x')
       ->condition('x.requester_uid', $requester)
       ->condition('x.recipient_uid', $recipient)
@@ -61,8 +66,8 @@ class UsersFriendsService implements UsersFriendsInterface {
       ->execute()
       ->fetchField();
 
-    if($recordsCount == 0) {
-      // insert data.
+    if ($recordsCount == 0) {
+      // Insert data.
       $result = $this->connection->insert('users_friends')
         ->fields([
           'request_date' => $this->time->getRequestTime(),
@@ -71,7 +76,8 @@ class UsersFriendsService implements UsersFriendsInterface {
           'status' => 0,
         ])
         ->execute();
-    } else {
+    }
+    else {
       $result = FALSE;
     }
 
@@ -144,7 +150,7 @@ class UsersFriendsService implements UsersFriendsInterface {
    * {@inheritdoc}
    */
   public function getFriendsStatus(int $uid_1, int $uid_2): string {
-    $query = \Drupal::database()->select('users_friends', 'n');
+    $query = $this->connection->select('users_friends', 'n');
     $query->addField('n', 'status');
     $query->addField('n', 'requester_uid');
     $query->addField('n', 'recipient_uid');
@@ -161,11 +167,11 @@ class UsersFriendsService implements UsersFriendsInterface {
     $query->range(0, 1);
     $data = $query->execute()->fetchAssoc();
 
-    switch (true) {
-      case ($data['status'] == 0 && $data['requester_uid'] == $this->currentUser):
+    switch (TRUE) {
+      case ($data['status'] == 0 && $data['requester_uid'] == $this->currentUser->id()):
         $result = 'requester';
         break;
-      case ($data['status'] == 0 && $data['recipient_uid'] == $this->currentUser):
+      case ($data['status'] == 0 && $data['recipient_uid'] == $this->currentUser->id()):
         $result = 'recipient';
         break;
       case ($data['status'] == 1):
@@ -184,7 +190,7 @@ class UsersFriendsService implements UsersFriendsInterface {
    * {@inheritdoc}
    */
   public function getFriendsUids(int $uid): array {
-    $query = \Drupal::database()->select('users_friends', 'n');
+    $query = $this->connection->select('users_friends', 'n');
     $query->addField('n', 'requester_uid');
     $query->addField('n', 'recipient_uid');
     $orGroup = $query->orConditionGroup()
