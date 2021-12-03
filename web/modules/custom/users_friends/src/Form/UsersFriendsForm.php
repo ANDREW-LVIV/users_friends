@@ -37,11 +37,19 @@ class UsersFriendsForm extends FormBase {
   protected AccountProxyInterface $currentUser;
 
   /**
+   * The UsersFriends service.
+   *
+   * @var \Drupal\users_friends\usersFriendsService|object|null
+   */
+  protected $usersFriendsService;
+
+  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
     $instance = parent::create($container);
     $instance->currentUser = $container->get('current_user');
+    $instance->usersFriendsService = $container->get('users_friends.manager');
 
     return $instance;
   }
@@ -62,7 +70,7 @@ class UsersFriendsForm extends FormBase {
 
     $form['friends_uids'] = [
       '#type' => 'markup',
-      '#markup' => implode(', ', \Drupal::service('users_friends.manager')
+      '#markup' => implode(', ', $this->usersFriendsService
         ->getFriendsUids($this->requesterUid)),
     ];
 
@@ -70,7 +78,7 @@ class UsersFriendsForm extends FormBase {
       return $form;
     }
 
-    $friendsStatus = \Drupal::service('users_friends.manager')
+    $friendsStatus = $this->usersFriendsService
       ->getFriendsStatus($this->requesterUid, $this->recipientUid);
 
     if ($friendsStatus == 'none') {
@@ -178,8 +186,8 @@ class UsersFriendsForm extends FormBase {
    *   The JSON response object.
    */
   protected function callbackAddRequestTrigger(array &$form, FormStateInterface $form_state): AjaxResponse {
-    /** @var \Drupal\users_friends\UsersFriendsService $addRequestService */
-    $addRequestService = \Drupal::service('users_friends.manager')
+    /** @var \Drupal\users_friends\usersFriendsService $addRequestService */
+    $addRequestService = $this->usersFriendsService
       ->addRequest($this->requesterUid, $this->recipientUid);
 
     return $this->templateAjaxTrigger((bool) $addRequestService, '#add-request', $this->t('request sent'));
@@ -197,8 +205,8 @@ class UsersFriendsForm extends FormBase {
    *   The JSON response object.
    */
   protected function callbackCancelRequestTrigger(array &$form, FormStateInterface $form_state): AjaxResponse {
-    /** @var \Drupal\users_friends\UsersFriendsService $cancelRequestService */
-    $cancelRequestService = \Drupal::service('users_friends.manager')
+    /** @var \Drupal\users_friends\usersFriendsService $cancelRequestService */
+    $cancelRequestService = $this->usersFriendsService
       ->cancelRequest($this->requesterUid, $this->recipientUid);
 
     return $this->templateAjaxTrigger((bool) $cancelRequestService, '#cancel-request', $this->t('request canceled'));
@@ -216,8 +224,8 @@ class UsersFriendsForm extends FormBase {
    *   The JSON response object.
    */
   protected function callbackAcceptRequestTrigger(array &$form, FormStateInterface $form_state): AjaxResponse {
-    /** @var \Drupal\users_friends\UsersFriendsService $cancelRequestService */
-    $cancelRequestService = \Drupal::service('users_friends.manager')
+    /** @var \Drupal\users_friends\usersFriendsService $cancelRequestService */
+    $cancelRequestService = $this->usersFriendsService
       ->acceptRequest($this->requesterUid, $this->recipientUid);
 
     return $this->templateAjaxTrigger((bool) $cancelRequestService, '#accept-request', $this->t('request accepted'));
@@ -235,8 +243,8 @@ class UsersFriendsForm extends FormBase {
    *   The JSON response object.
    */
   protected function callbackDeclineRequestTrigger(array &$form, FormStateInterface $form_state): AjaxResponse {
-    /** @var \Drupal\users_friends\UsersFriendsService $cancelRequestService */
-    $cancelRequestService = \Drupal::service('users_friends.manager')
+    /** @var \Drupal\users_friends\usersFriendsService $cancelRequestService */
+    $cancelRequestService = $this->usersFriendsService
       ->declineRequest($this->requesterUid, $this->recipientUid);
 
     return $this->templateAjaxTrigger((bool) $cancelRequestService, '#decline-request', $this->t('request declined'));
