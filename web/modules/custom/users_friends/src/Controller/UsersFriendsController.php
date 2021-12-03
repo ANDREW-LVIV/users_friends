@@ -5,20 +5,20 @@ namespace Drupal\users_friends\Controller;
 use Drupal\Core\Controller\ControllerBase;
 
 /**
- * Class UsersFriendsController.
+ * UsersFriends Controller.
  */
 class UsersFriendsController extends ControllerBase {
 
   /**
    * Page.
    *
-   * @return string
+   * @return array
    *   Return Hello string.
    */
   public function page() {
     return [
       '#type' => 'markup',
-      '#markup' => $this->t('main page')
+      '#markup' => $this->t('main page'),
     ];
   }
 
@@ -28,13 +28,13 @@ class UsersFriendsController extends ControllerBase {
    * @param int $uid
    *   User ID.
    *
-   * @return string
+   * @return array
    *   Return string.
    */
   public function friendsList(int $uid) {
     return [
       '#type' => 'markup',
-      '#markup' => $this->t('Friends List')
+      '#markup' => $this->t('Friends List'),
     ];
   }
 
@@ -44,13 +44,14 @@ class UsersFriendsController extends ControllerBase {
    * @param int $uid
    *   User ID.
    *
-   * @return string
+   * @return array
    *   Return string.
    */
   public function friendsRequests(int $uid) {
     return [
       '#type' => 'markup',
-      '#markup' => $this->t('Friends Requests')
+      '#markup' => $this->t('Friends Requests'),
     ];
   }
+
 }

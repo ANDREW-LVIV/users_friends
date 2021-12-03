@@ -2,14 +2,18 @@
 
 namespace Drupal\users_friends;
 
+/**
+ * Defines UsersFriends interface.
+ */
 interface UsersFriendsInterface {
+
   /**
    * Add friendship request.
    *
    * @param int $requester
-   *   requester id.
+   *   Requester id.
    * @param int $recipient
-   *   recipient id.
+   *   Recipient id.
    *
    * @return bool
    *   Status of add request.
@@ -20,9 +24,9 @@ interface UsersFriendsInterface {
    * Cancel friendship request.
    *
    * @param int $requester
-   *   requester id.
+   *   Requester id.
    * @param int $recipient
-   *   recipient id.
+   *   Recipient id.
    *
    * @return bool
    *   Status of cancel request.
@@ -33,9 +37,9 @@ interface UsersFriendsInterface {
    * Accept friendship request.
    *
    * @param int $requester
-   *   requester id.
+   *   Requester id.
    * @param int $recipient
-   *   recipient id.
+   *   Recipient id.
    *
    * @return bool
    *   Status of accept request.
@@ -46,9 +50,9 @@ interface UsersFriendsInterface {
    * Decline friendship request.
    *
    * @param int $requester
-   *   requester id.
+   *   Requester id.
    * @param int $recipient
-   *   recipient id.
+   *   Recipient id.
    *
    * @return bool
    *   Status of decline request.
@@ -59,9 +63,9 @@ interface UsersFriendsInterface {
    * Remove friend.
    *
    * @param int $uid_1
-   *   user id.
+   *   User id.
    * @param int $uid_2
-   *   user id.
+   *   User id.
    *
    * @return bool
    *   Status of decline request.
@@ -72,9 +76,9 @@ interface UsersFriendsInterface {
    * Friends status.
    *
    * @param int $uid_1
-   *   user id.
+   *   User id.
    * @param int $uid_2
-   *   user id.
+   *   User id.
    *
    * @return string
    *   Status of friendship.
@@ -85,7 +89,7 @@ interface UsersFriendsInterface {
    * Friends uids.
    *
    * @param int $uid
-   *   user id.
+   *   User id.
    *
    * @return array
    *   Array of friends ids.
@@ -96,10 +100,11 @@ interface UsersFriendsInterface {
    * Friends data.
    *
    * @param int $uid
-   *   user id.
+   *   User id.
    *
    * @return string
    *   Friends data.
    */
   public function getFriends(int $uid): string;
+
 }

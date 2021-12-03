@@ -65,7 +65,10 @@ class UsersFriendsDeleteForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getQuestion() {
-    return $this->t('Do you want to delete %uid_1 & %uid_2?', ['%uid_1' => $this->uid_1, '%uid_2' => $this->uid_2]);
+    return $this->t('Do you want to delete %uid_1 & %uid_2?', [
+      '%uid_1' => $this->uid_1,
+      '%uid_2' => $this->uid_2,
+    ]);
   }
 
 }
