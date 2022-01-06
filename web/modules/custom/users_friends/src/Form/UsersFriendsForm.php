@@ -66,7 +66,8 @@ class UsersFriendsForm extends FormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     $this->requesterUid = $this->currentUser->id();
-    $this->recipientUid = \Drupal::routeMatch()->getParameter('user')->id();
+    $userRoute = \Drupal::routeMatch()->getParameter('user');
+    $this->recipientUid = $userRoute ? $userRoute->id() : 0;
 
     $form['friends_uids'] = [
       '#type' => 'markup',
